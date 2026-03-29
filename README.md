@@ -1,6 +1,6 @@
 # Hey, I'm Alex 👋
 
-Digital Producer with 14+ years in multimedia and design, transitioning into DevOps engineering. I bring systems thinking from a production background — understanding how things are built, delivered, and maintained — and I'm applying that to infrastructure, automation, and deployment pipelines.
+Digital Producer with 14+ years in multimedia and design, transitioning into DevOps engineering. I bring systems thinking from a production background, understanding how things are built, delivered, and maintained, and I'm applying that to infrastructure, automation, and deployment pipelines.
 
 ---
 
@@ -57,7 +57,7 @@ Git · Jest · Lefthook · EAS Build · VS Code
 
 ## Background
 
-Before pivoting to DevOps I spent 14+ years as a Digital Producer at Ironbark Marketing — spanning UI/UX design, front-end development, WordPress plugin development, and multimedia production. That background shapes how I approach infrastructure: documentation, system design, and the gap between what developers build and what operations teams maintain.
+Before pivoting to DevOps I spent 14+ years as a Digital Producer at Ironbark Marketing, spanning UI/UX design, front-end development, WordPress plugin development, and multimedia production. That background shapes how I approach infrastructure: documentation, system design, and the gap between what developers build and what operations teams maintain.
 
 ---
 
