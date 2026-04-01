@@ -61,3 +61,24 @@ Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin
 `Nginx` `Let's Encrypt` `Cloudflare` `Bash` `Linux` `Cron`
  
 ---
+
+## Technologies
+ 
+**Infrastructure & DevOps**
+Linux · Nginx · Docker · GitHub Actions · Bash · Cron · UFW · SSH · Cloudflare · Let's Encrypt · Certbot
+ 
+**Development**
+React Native · Expo · JavaScript · PHP · HTML · CSS
+ 
+**Tools**
+Git · Jest · Lefthook · EAS Build · VS Code
+ 
+---
+ 
+## Background
+Before pivoting to DevOps I spent 6+ years as a Digital Producer at Ironbark Marketing, spanning UI/UX design, front-end development, WordPress plugin development, and multimedia production. That background shapes how I approach infrastructure: documentation, system design, and the gap between what developers build and what operations teams maintain.
+ 
+---
+ 
+## Connect
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-alexchuc-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/alexchuc/)
