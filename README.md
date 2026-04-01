@@ -42,6 +42,14 @@ CI/CD pipeline: GitHub Actions `test → build → submit` on version tag push. 
 
 ### [Quicklinks](https://github.com/AC-DAC/Quicklinks-Public)
 WordPress plugin built at Ironbark Marketing that generates a branded link directory page at `yourdomain.com/quicklinks/`. Customisable profile image, background and button colours, drag-and-drop link reordering. CI/CD pipeline via GitHub Actions: PHPCS validation enforcing WordPress Coding Standards, zip packaging, and automated GitHub Releases on version tag push.
+
+<table>
+  <tr>
+    <td><img src="assets/screenshots/quicklinks-screenshots-01.jpg" width="220"/></td>
+    <td><img src="assets/screenshots/quicklinks-screenshots-02.jpg" width="220"/></td>
+    <td><img src="assets/screenshots/quicklinks-screenshots-03.jpg" width="220"/></td>
+  </tr>
+</table>
  
 `WordPress` `PHP` `GitHub Actions` `PHPCS`
 
