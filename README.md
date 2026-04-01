@@ -80,13 +80,13 @@ Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin
 ## Technologies
  
 **Infrastructure & DevOps**
-Linux · Nginx · Docker · GitHub Actions · Bash · Cron · UFW · SSH · Cloudflare · Let's Encrypt · Certbot
+Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · UFW · SSH · Cloudflare · Let's Encrypt · Certbot · EAS CLI
  
 **Development**
 React Native · Expo · JavaScript · PHP · HTML · CSS
  
 **Tools**
-Git · Jest · Lefthook · EAS Build · VS Code
+Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
  
 ---
  
