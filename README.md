@@ -39,6 +39,13 @@ CI/CD pipeline: GitHub Actions `test → build → submit` on version tag push. 
 `React Native` `Expo` `GitHub Actions` `EAS Build` `Jest` `Android`
 
 ---
+
+### [Quicklinks](https://github.com/AC-DAC/Quicklinks-Public)
+WordPress plugin built at Ironbark Marketing that generates a branded link directory page at `yourdomain.com/quicklinks/`. Customisable profile image, background and button colours, drag-and-drop link reordering. CI/CD pipeline via GitHub Actions: PHPCS validation enforcing WordPress Coding Standards, zip packaging, and automated GitHub Releases on version tag push.
+ 
+`WordPress` `PHP` `GitHub Actions` `PHPCS`
+
+---
  
 ### [Mothership — Centralised WordPress Management Infrastructure](https://github.com/AC-DAC/Mothership-Public)
 Self-hosted centralised management dashboard for over 15 production WordPress client sites, built on MainWP and deployed to a dedicated subdomain. Replaces a manual, site-by-site update workflow with a single control plane covering bulk updates, uptime monitoring, and security visibility across all managed sites.
