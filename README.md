@@ -45,9 +45,9 @@ WordPress plugin built at Ironbark Marketing that generates a branded link direc
 
 <table>
   <tr>
-    <td><img src="assets/screenshots/quicklinks-screenshots-01.jpg" width="220"/></td>
-    <td><img src="assets/screenshots/quicklinks-screenshots-02.jpg" width="220"/></td>
-    <td><img src="assets/screenshots/quicklinks-screenshots-03.jpg" width="220"/></td>
+    <td><img src="assets/screenshots/quicklinks-screenshots-1.jpg" width="220"/></td>
+    <td><img src="assets/screenshots/quicklinks-screenshots-2.jpg" width="220"/></td>
+    <td><img src="assets/screenshots/quicklinks-screenshots-3.jpg" width="220"/></td>
   </tr>
 </table>
  
