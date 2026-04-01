@@ -45,6 +45,6 @@ Self-hosted centralised management dashboard for over 15 production WordPress cl
  
 Key implementation decisions: real server-level cron over WP-Cron (unreliable on a low-traffic dashboard-only subdomain); per-site OpenSSL key pairs with Unique Security IDs replacing password authentication; maintenance mode for frontend obscurity after directory password protection was evaluated and rejected (intercepts WordPress core HTTP requests). Backup strategy layered across UpdraftPlus per-site (weekly) and VentraIP server-level hourly snapshots.
  
-![Mothership Dashboard](assets/mothership-dashboard.jpg)
+![Mothership Dashboard](assets/screenshots/mothership-dashboard.jpg)
  
 `MainWP` `WordPress` `Apache` `MariaDB` `Linux` `Cron`
