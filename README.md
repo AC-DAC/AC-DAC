@@ -48,3 +48,16 @@ Key implementation decisions: real server-level cron over WP-Cron (unreliable on
 ![Mothership Dashboard](assets/screenshots/mothership-dashboard.jpg)
  
 `MainWP` `WordPress` `Apache` `MariaDB` `Linux` `Cron`
+
+---
+ 
+### [Aersia VIPVGM Player - Self Hosted Fork](https://github.com/AC-DAC/aersia-vip-player-self-hosted-fork)
+Self-hosted video game music player running on a Raspberry Pi 4B. Forked and significantly extended from an upstream HTML5 player: migrated playlist parsing from XML to JSON (vipvgm.net API), added sequential playback mode, Source playlist with CDN fallback logic, and Omni playlist (client-side merge of VIP, Mellow, and Exiled sorted A-Z). Full localStorage persistence across sessions with sequential position restoration fix.
+ 
+Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin), dynamic DNS automation via Cloudflare API, CORS resolved via local Pi proxy serving roster files refreshed weekly by cron.
+ 
+![Aersia VIP Player](assets/screenshots/aersia-player.png)
+ 
+`Nginx` `Let's Encrypt` `Cloudflare` `Bash` `Linux` `Cron`
+ 
+---
