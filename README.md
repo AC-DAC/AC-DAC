@@ -17,10 +17,23 @@ Privacy-first workout tracking app for Android. No ads, no account required, all
  
 CI/CD pipeline: GitHub Actions `test → build → submit` on version tag push. Jest unit test suite. EAS Build produces AAB artifact; EAS Submit delivers to Play Store internal track via Google Service Account (least-privilege permissions). Actions pinned to immutable commit SHAs with `permissions: contents: read` at workflow level. Lefthook + gitleaks for pre-commit secret scanning.
  
-![FitForge Phone 01](assets/screenshots/fitforge-phone-screenshots-01.png) ![FitForge Phone 02](assets/screenshots/fitforge-phone-screenshots-02.png) ![FitForge Phone 03](assets/screenshots/fitforge-phone-screenshots-03.png)
+<table>
+  <tr>
+    <td><img src="assets/screenshots/fitforge-phone-screenshots-01.png" width="220"/></td>
+    <td><img src="assets/screenshots/fitforge-phone-screenshots-02.png" width="220"/></td>
+    <td><img src="assets/screenshots/fitforge-phone-screenshots-03.png" width="220"/></td>
+  </tr>
+</table>
  
-![FitForge Tablet 7" 4](assets/screenshots/fitforge-tablet-screenshots_7-4.png) ![FitForge Tablet 7" 5](assets/screenshots/fitforge-tablet-screenshots_7-5.png)
- 
-![FitForge Tablet 10" 6](assets/screenshots/fitforge-tablet-screenshots_10-6.png) ![FitForge Tablet 10" 7](assets/screenshots/fitforge-tablet-screenshots_10-7.png)
+<table>
+  <tr>
+    <td><img src="assets/screenshots/fitforge-tablet-screenshots_7-4.png" width="340"/></td>
+    <td><img src="assets/screenshots/fitforge-tablet-screenshots_7-5.png" width="340"/></td>
+  </tr>
+  <tr>
+    <td><img src="assets/screenshots/fitforge-tablet-screenshots_10-6.png" width="340"/></td>
+    <td><img src="assets/screenshots/fitforge-tablet-screenshots_10-7.png" width="340"/></td>
+  </tr>
+</table>
  
 `React Native` `Expo` `GitHub Actions` `EAS Build` `Jest` `Android`
