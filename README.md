@@ -84,6 +84,15 @@ Extended from upstream to achieve full playlist parity with the web player: XML/
 
 CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached to GitHub Release. Actions pinned to immutable commit SHAs. Licensed AGPLv3.
 
+<table>
+  <tr>
+    <td><img src="assets/screenshots/aersia-android-1.jpeg" width="220"/></td>
+    <td><img src="assets/screenshots/aersia-android-2.jpeg" width="220"/></td>
+    <td><img src="assets/screenshots/aersia-android-3.jpeg" width="220"/></td>
+    <td><img src="assets/screenshots/aersia-android-4.jpeg" width="220"/></td>
+  </tr>
+</table>
+
 `Kotlin` `Jetpack Compose` `Media3` `GitHub Actions` `Gradle` `Android`
 
 ---
