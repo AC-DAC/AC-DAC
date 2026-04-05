@@ -66,7 +66,7 @@ Key implementation decisions: real server-level cron over WP-Cron (unreliable on
 
 ---
  
-### [Aersia VIPVGM Player - Self Hosted Fork](https://github.com/AC-DAC/aersia-vip-player-self-hosted-fork)
+### [Aersia VIPVGM Player — Self-Hosted Fork](https://github.com/AC-DAC/aersia-vip-player-self-hosted-fork)
 Self-hosted video game music player running on a Raspberry Pi 4B. Forked and significantly extended from an upstream HTML5 player: migrated playlist parsing from XML to JSON (vipvgm.net API), added sequential playback mode, Source playlist with CDN fallback logic, and Omni playlist (client-side merge of VIP, Mellow, and Exiled sorted A-Z). Full localStorage persistence across sessions with sequential position restoration fix.
  
 Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin), dynamic DNS automation via Cloudflare API, CORS resolved via local Pi proxy serving roster files refreshed weekly by cron.
@@ -74,7 +74,18 @@ Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin
 ![Aersia VIP Player](assets/screenshots/aersia-player.png)
  
 `Nginx` `Let's Encrypt` `Cloudflare` `Bash` `Linux` `Cron`
- 
+
+---
+
+### [Aersia VIPVGM Player — Android](https://github.com/AC-DAC/aersia-vip-player-android)
+Native Android companion app to the self-hosted web player, built as a fork of [VidyaMusic by MateusRodCosta](https://github.com/MateusRodCosta/VidyaMusic). The web player originally shipped a PWA for mobile use, but background audio proved unreliable on Android due to OS power management — a native app was the correct solution.
+
+Extended from upstream to achieve full playlist parity with the web player: XML/XSPF roster support for WAP and CPP playlists, Source playlist with source-file filtering, and Omni (concurrent fetch of all six playlists, merged and sorted A-Z). Per-playlist position memory with atomic snapshot persistence, shuffle state persistence, and Bluetooth auto-launch notification support.
+
+CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached to GitHub Release. Actions pinned to immutable commit SHAs. Licensed AGPLv3.
+
+`Kotlin` `Jetpack Compose` `Media3` `GitHub Actions` `Gradle` `Android`
+
 ---
 
 ## Technologies
@@ -83,7 +94,7 @@ Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin
 Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · UFW · SSH · Cloudflare · Let's Encrypt · Certbot · EAS CLI
  
 **Development**
-React Native · Expo · JavaScript · PHP · HTML · CSS
+React Native · Expo · Kotlin · JavaScript · PHP · HTML · CSS
  
 **Tools**
 Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
