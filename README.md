@@ -2,6 +2,34 @@
 Digital Producer with 14+ years in multimedia and design, transitioning into DevOps engineering. I bring systems thinking from a production background, understanding how things are built, delivered, and maintained, and I'm applying that to infrastructure, automation, and deployment pipelines.
 
 I started in graphic design where details matter because someone experiences them. Then spent a decade as a Digital Producer, translating between human experience and technical execution. DevOps was the natural next step. It's the same translation problem, just at the infrastructure layer instead of the interface layer.
+
+        ┌─────────────────────────────┐
+        │         ABSTRACTION         │
+        │   patterns · systems ·      │
+        │   architecture · strategy   │
+        └──────────────┬──────────────┘
+                       │
+                       ▼
+        ┌─────────────────────────────┐
+        │           BRIDGE            │
+        │   translation · context ·   │
+        │   documentation · empathy   │
+        └──────────────┬──────────────┘
+                       │
+                       ▼
+        ┌─────────────────────────────┐
+        │           DETAIL            │
+        │   precision · execution ·   │
+        │   implementation · craft    │
+        └──────────────┬──────────────┘
+                       │
+                       └──────────────────────────────┐
+                                                      │
+        ┌─────────────────────────────┐               │
+        │         ABSTRACTION         │◄──────────────┘
+        │   informed by detail ·      │
+        │   grounded · accurate       │
+        └─────────────────────────────┘
  
 ---
  
