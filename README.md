@@ -95,6 +95,15 @@ Key implementation decisions: real server-level cron over WP-Cron (unreliable on
 `MainWP` `WordPress` `Apache` `MariaDB` `Linux` `Cron`
 
 ---
+
+### [Pi NAS — Self-Hosted Network Storage](https://github.com/AC-DAC/pi-nas)
+Self-hosted NAS on a Raspberry Pi 4B, replacing an end-of-life Netgear ReadyNAS. Two 1TB NVMe SSDs in a software RAID 1 array via mdadm, served through FileBrowser Quantum over the local network. Daily incremental backup of selected folders from connected devices via rsync over SSH, managed by anacron.
+
+Key implementation decisions: OMV rejected to avoid conflicts with existing Pi services; Time Machine rejected (all-or-nothing system backup); cron replaced with anacron for missed-run tolerance; FileBrowser original replaced with Quantum fork after diagnosing a routing bug in v2.63.4; powered USB hub added after diagnosing Pi 4B USB power budget limitation via dmesg. CVE patched same session as release.
+
+`mdadm` `ext4` `rsync` `anacron` `systemd` `Linux` `SSH`
+
+---
  
 ### [Aersia VIPVGM Player — Self-Hosted Fork](https://github.com/AC-DAC/aersia-vip-player-self-hosted-fork)
 Self-hosted video game music player running on a Raspberry Pi 4B. Forked and significantly extended from an upstream HTML5 player: migrated playlist parsing from XML to JSON (vipvgm.net API), added sequential playback mode, Source playlist with CDN fallback logic, and Omni playlist (client-side merge of VIP, Mellow, and Exiled sorted A-Z). Full localStorage persistence across sessions with sequential position restoration fix.
@@ -130,8 +139,11 @@ CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached
 ## Technologies
  
 **Infrastructure & DevOps**
-Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · UFW · SSH · Cloudflare · Let's Encrypt · Certbot · EAS CLI
- 
+Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · Cloudflare · Let's Encrypt · Certbot · EAS CLI
+
+**Cloud**
+AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI
+
 **Development**
 React Native · Expo · Kotlin · JavaScript · PHP · HTML · CSS
  
