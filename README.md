@@ -30,23 +30,25 @@ I started in graphic design where details matter because someone experiences the
         │   informed by detail ·      │
         │   grounded · accurate       │
         └─────────────────────────────┘
- 
+
 ---
- 
+
 ## What I'm Working On
-- Building a DevOps learning path hands-on: Linux → Git → Docker → CI/CD → Cloud → IaC → Observability
-- Deploying and maintaining real infrastructure on a self-hosted Raspberry Pi 4B lab environment
-- Automating Android app delivery for FitForge via GitHub Actions → EAS Build → Google Play Store
- 
+**Soulful** — research prototype exploring a dual-awareness design approach to AI companion UX. Existing platforms (Talkie, CHAI) degrade over time because their safety moderation is tuned for liability, not experience — blanket filters that break immersion for the majority to protect a minority edge case. The hypothesis: UI/UX mechanics can maintain healthy user awareness that they're engaging with fiction without disclaimers or content blocks.
+
+Built on Ollama with Metal-accelerated local inference on Apple Silicon. Node.js CLI, SQLite persistence, persistent character memory and relationship state across sessions. Characters maintain trust levels, mood, and a growing memory bank that accumulates across every interaction. Benchmarked 7 models evaluating instruction following, state tracking, and response consistency — including abliterated model variants to resolve safety filter interference at the inference layer rather than the prompt layer.
+
+The interesting design problems: code-level apology detection (more reliable than prompt-only on smaller models), GPU contention between main conversation and background memory extraction calls, and building character personas that are genuinely differentiated rather than cosmetic skins on the same base behaviour.
+
 ---
- 
+
 ## Projects
- 
+
 ### [FitForge](https://github.com/AC-DAC/FitForge-Public)
 Privacy-first workout tracking app for Android. No ads, no account required, all data stored on-device. Features custom workout creation, guided session mode, stats and insights, reminders, and QR code workout sharing. Built in React Native / Expo with a custom Material Design-inspired design system. Currently in closed testing on the Google Play Store.
- 
+
 CI/CD pipeline: GitHub Actions `test → build → submit` on version tag push. Jest unit test suite. EAS Build produces AAB artifact; EAS Submit delivers to Play Store internal track via Google Service Account (least-privilege permissions). Actions pinned to immutable commit SHAs with `permissions: contents: read` at workflow level. Lefthook + gitleaks for pre-commit secret scanning.
- 
+
 <table>
   <tr>
     <td><img src="assets/screenshots/fitforge-phone-screenshots-01.png" width="220"/></td>
@@ -54,7 +56,7 @@ CI/CD pipeline: GitHub Actions `test → build → submit` on version tag push. 
     <td><img src="assets/screenshots/fitforge-phone-screenshots-03.png" width="220"/></td>
   </tr>
 </table>
- 
+
 <table>
   <tr>
     <td><img src="assets/screenshots/fitforge-tablet-screenshots_7-4.png" width="340"/></td>
@@ -65,7 +67,7 @@ CI/CD pipeline: GitHub Actions `test → build → submit` on version tag push. 
     <td><img src="assets/screenshots/fitforge-tablet-screenshots_10-7.png" width="340"/></td>
   </tr>
 </table>
- 
+
 `React Native` `Expo` `GitHub Actions` `EAS Build` `Jest` `Android`
 
 ---
@@ -80,18 +82,18 @@ WordPress plugin built at Ironbark Marketing that generates a branded link direc
     <td><img src="assets/screenshots/quicklinks-screenshot-3.jpg" width="220"/></td>
   </tr>
 </table>
- 
+
 `WordPress` `PHP` `GitHub Actions` `PHPCS`
 
 ---
- 
+
 ### [Mothership — Centralised WordPress Management Infrastructure](https://github.com/AC-DAC/Mothership-Public)
 Self-hosted centralised management dashboard for over 15 production WordPress client sites, built on MainWP and deployed to a dedicated subdomain. Replaces a manual, site-by-site update workflow with a single control plane covering bulk updates, uptime monitoring, and security visibility across all managed sites.
- 
+
 Key implementation decisions: real server-level cron over WP-Cron (unreliable on a low-traffic dashboard-only subdomain); per-site OpenSSL key pairs with Unique Security IDs replacing password authentication; maintenance mode for frontend obscurity after directory password protection was evaluated and rejected (intercepts WordPress core HTTP requests). Backup strategy layered across UpdraftPlus per-site (weekly) and VentraIP server-level hourly snapshots.
- 
+
 ![Mothership Dashboard](assets/screenshots/mothership-dashboard.jpg)
- 
+
 `MainWP` `WordPress` `Apache` `MariaDB` `Linux` `Cron`
 
 ---
@@ -101,17 +103,21 @@ Self-hosted NAS on a Raspberry Pi 4B, replacing an end-of-life Netgear ReadyNAS.
 
 Key implementation decisions: OMV rejected to avoid conflicts with existing Pi services; Time Machine rejected (all-or-nothing system backup); cron replaced with anacron for missed-run tolerance; FileBrowser original replaced with Quantum fork after diagnosing a routing bug in v2.63.4; powered USB hub added after diagnosing Pi 4B USB power budget limitation via dmesg. CVE patched same session as release.
 
-`mdadm` `ext4` `rsync` `anacron` `systemd` `Linux` `SSH`
+Monitoring stack: Node Exporter on the Pi, Prometheus + Grafana on a separate host. Custom textfile collector metrics for backup job success (`backup_last_success`) and RAID array health (`raid_health`). Alert rules fire to email on backup failure or array degradation.
+
+![Pi Monitor Dashboard](https://raw.githubusercontent.com/AC-DAC/pi-nas/main/assets/screenshots/grafana-pi-monitor.png)
+
+`mdadm` `ext4` `rsync` `anacron` `systemd` `Linux` `SSH` `Prometheus` `Grafana` `Node Exporter`
 
 ---
- 
+
 ### [Aersia VIPVGM Player — Self-Hosted Fork](https://github.com/AC-DAC/aersia-vip-player-self-hosted-fork)
 Self-hosted video game music player running on a Raspberry Pi 4B. Forked and significantly extended from an upstream HTML5 player: migrated playlist parsing from XML to JSON (vipvgm.net API), added sequential playback mode, Source playlist with CDN fallback logic, and Omni playlist (client-side merge of VIP, Mellow, and Exiled sorted A-Z). Full localStorage persistence across sessions with sequential position restoration fix.
- 
+
 Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin), dynamic DNS automation via Cloudflare API, CORS resolved via local Pi proxy serving roster files refreshed weekly by cron.
- 
+
 ![Aersia VIP Player](assets/screenshots/aersia-player.png)
- 
+
 `Nginx` `Let's Encrypt` `Cloudflare` `Bash` `Linux` `Cron`
 
 ---
@@ -137,25 +143,25 @@ CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached
 ---
 
 ## Technologies
- 
+
 **Infrastructure & DevOps**
-Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · Cloudflare · Let's Encrypt · Certbot · EAS CLI
+Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · Cloudflare · Let's Encrypt · Certbot · EAS CLI · Prometheus · Grafana · Node Exporter · Ansible
 
 **Cloud**
-AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI
+AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Secrets Manager · Terraform
 
 **Development**
 React Native · Expo · Kotlin · JavaScript · PHP · HTML · CSS
- 
+
 **Tools**
 Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
- 
+
 ---
- 
+
 ## Background
 Before pivoting to DevOps I spent 6+ years as a Digital Producer at Ironbark Marketing, spanning UI/UX design, front-end development, WordPress plugin development, and multimedia production. That background shapes how I approach infrastructure: documentation, system design, and the gap between what developers build and what operations teams maintain.
- 
+
 ---
- 
+
 ## Connect
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-alexchuc-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/alexchuc/)
