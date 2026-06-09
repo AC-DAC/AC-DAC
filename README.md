@@ -105,20 +105,22 @@ Key implementation decisions: OMV rejected to avoid conflicts with existing Pi s
 
 Monitoring stack: Node Exporter on the Pi, Prometheus + Grafana on a separate host. Custom textfile collector metrics for backup job success (`backup_last_success`) and RAID array health (`raid_health`). Alert rules fire to email on backup failure or array degradation.
 
+External access via Cloudflare Tunnel — replaces port forwarding after ISP change blocked inbound ports on residential plan. Pi static IP configured via systemd-networkd for stability across router reboots.
+
 ![Pi Monitor Dashboard](https://raw.githubusercontent.com/AC-DAC/pi-nas/main/assets/screenshots/grafana-pi-monitor.png)
 
-`mdadm` `ext4` `rsync` `anacron` `systemd` `Linux` `SSH` `Prometheus` `Grafana` `Node Exporter`
+`mdadm` `ext4` `rsync` `anacron` `systemd` `Linux` `SSH` `Prometheus` `Grafana` `Node Exporter` `Cloudflare Tunnel`
 
 ---
 
 ### [Aersia VIPVGM Player — Self-Hosted Fork](https://github.com/AC-DAC/aersia-vip-player-self-hosted-fork)
 Self-hosted video game music player running on a Raspberry Pi 4B. Forked and significantly extended from an upstream HTML5 player: migrated playlist parsing from XML to JSON (vipvgm.net API), added sequential playback mode, Source playlist with CDN fallback logic, and Omni playlist (client-side merge of VIP, Mellow, and Exiled sorted A-Z). Full localStorage persistence across sessions with sequential position restoration fix.
 
-Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin), dynamic DNS automation via Cloudflare API, CORS resolved via local Pi proxy serving roster files refreshed weekly by cron.
+Infrastructure: Nginx, Let's Encrypt TLS (DNS-01 challenge via Cloudflare plugin), Cloudflare Tunnel for external access (replaces dynamic DNS + port forwarding), CORS resolved via local Pi proxy serving roster files refreshed weekly by cron.
 
 ![Aersia VIP Player](assets/screenshots/aersia-player.png)
 
-`Nginx` `Let's Encrypt` `Cloudflare` `Bash` `Linux` `Cron`
+`Nginx` `Let's Encrypt` `Cloudflare` `Cloudflare Tunnel` `Bash` `Linux` `Cron`
 
 ---
 
@@ -145,7 +147,7 @@ CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached
 ## Technologies
 
 **Infrastructure & DevOps**
-Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · Cloudflare · Let's Encrypt · Certbot · EAS CLI · Prometheus · Grafana · Node Exporter · Ansible
+Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · Cloudflare · Cloudflare Tunnel · Let's Encrypt · Certbot · EAS CLI · Prometheus · Grafana · Node Exporter · Ansible
 
 **Cloud**
 AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Secrets Manager · Terraform
