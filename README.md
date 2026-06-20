@@ -34,11 +34,35 @@ I started in graphic design where details matter because someone experiences the
 ---
 
 ## What I'm Working On
-**Soulful** — research prototype exploring a dual-awareness design approach to AI companion UX. Existing platforms (Talkie, CHAI) degrade over time because their safety moderation is tuned for liability, not experience — blanket filters that break immersion for the majority to protect a minority edge case. The hypothesis: UI/UX mechanics can maintain healthy user awareness that they're engaging with fiction without disclaimers or content blocks.
+**Live Translator** — a mobile web app for real-time Korean speech-to-English translation, built for live video calls with Korean-speaking family. Most translation apps (Google Translate, Papago, Microsoft Translator) stop transcribing on silence, which breaks natural conversation with a speaker who pauses mid-sentence. This captures continuously and only stops when explicitly told to.
 
-Built on Ollama with Metal-accelerated local inference on Apple Silicon. Node.js CLI, SQLite persistence, persistent character memory and relationship state across sessions. Characters maintain trust levels, mood, and a growing memory bank that accumulates across every interaction. Benchmarked 7 models evaluating instruction following, state tracking, and response consistency — including abliterated model variants to resolve safety filter interference at the inference layer rather than the prompt layer.
+The interesting constraint: the target phone runs GrapheneOS, which blocks Google Play Services — so the browser-native Web Speech API (which depends on Google's speech recognition) simply doesn't work there. That ruled out the obvious approach and pushed the whole STT/translation layer off-device onto edge compute instead.
 
-The interesting design problems: code-level apology detection (more reliable than prompt-only on smaller models), GPU contention between main conversation and background memory extraction calls, and building character personas that are genuinely differentiated rather than cosmetic skins on the same base behaviour.
+```
+┌──────────────────────────────────┐
+│  Pi (self-hosted)                │
+│  nginx — static hosting          │
+│  serves React build only         │
+└────────────┬─────────────────────┘
+             │ 1. loads app
+             ▼
+┌──────────────────────────────────┐
+│  Phone (any browser)             │
+│  React SPA                       │
+│  MediaRecorder API               │
+└────────────┬─────────────────────┘
+             │ 2. audio chunks
+             ▼
+┌──────────────────────────────────┐
+│  Cloudflare Workers AI           │
+│  Whisper → Korean STT            │
+│  Llama 3.1 → English translation │
+└──────────────────────────────────┘
+```
+
+Audio capture via MediaRecorder API (works in any browser, no Google services required), streamed to Cloudflare Workers AI: Whisper handles Korean STT, Llama 3.1 8B handles translation with a rolling context window for coherence across sentences. Self-hosted on the same Raspberry Pi running the rest of the home lab — nginx serves the static build only, no backend proxy needed since the browser talks to Workers AI directly. Security layered across Cloudflare Access (email-allowlisted PIN gate on the subdomain), the Workers AI API key living only in the Worker's environment, and nginx rate limiting as a backstop.
+
+`React` `Cloudflare Workers AI` `Whisper` `Llama 3.1` `nginx` `systemd` `Let's Encrypt` `Cloudflare`
 
 ---
 
@@ -113,6 +137,25 @@ External access via Cloudflare Tunnel — replaces port forwarding after ISP cha
 
 ---
 
+### [Pi-hole — Network-Wide DNS Filtering & Security Review](https://github.com/AC-DAC/pihole-dns-filtering)
+Network-wide DNS-based ad/tracker filtering for the home lab, deployed on the same Raspberry Pi 4B already running Pi NAS and Aersia. No application code in this repo — the deliverable is the architecture, the security review process, and two debugging case studies, written up as a standalone documentation repo rather than a thing to clone and run.
+
+Key implementation decisions: four-category security review applied to the install script before execution (external fetches, obfuscation, excessive permissions, rogue persistence) rather than trusting `curl | bash` on faith; failure-domain analysis rejecting a second Pi-hole as DNS2 fallback since it would share the same host/power/storage as the primary; DNS-01 (not HTTP-01) certificate challenge for an intentionally internet-unreachable admin subdomain. Diagnosed and resolved a live incident where a port-binding conflict silently broke an unrelated service's IPv6 traffic, and separately ruled out a false alarm that looked like a filtering failure but traced to an unrelated browser privacy setting.
+
+```
+  LAN device ──▶ Filtering host ──▶ Matches blocklist?
+                                       │             │
+                                      yes            no
+                                       │             │
+                                       ▼             ▼
+                              0.0.0.0 / NXDOMAIN   Forward to
+                              (blocked locally)     upstream resolver
+```
+
+`Linux` `DNS` `Nginx` `systemd` `Let's Encrypt` `Security Review` `Raspberry Pi`
+
+---
+
 ### [Aersia VIPVGM Player — Self-Hosted Fork](https://github.com/AC-DAC/aersia-vip-player-self-hosted-fork)
 Self-hosted video game music player running on a Raspberry Pi 4B. Forked and significantly extended from an upstream HTML5 player: migrated playlist parsing from XML to JSON (vipvgm.net API), added sequential playback mode, Source playlist with CDN fallback logic, and Omni playlist (client-side merge of VIP, Mellow, and Exiled sorted A-Z). Full localStorage persistence across sessions with sequential position restoration fix.
 
@@ -147,13 +190,13 @@ CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached
 ## Technologies
 
 **Infrastructure & DevOps**
-Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · Cloudflare · Cloudflare Tunnel · Let's Encrypt · Certbot · EAS CLI · Prometheus · Grafana · Node Exporter · Ansible
+Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · DNS · Cloudflare · Cloudflare Tunnel · Cloudflare Workers AI · Let's Encrypt · Certbot · EAS CLI · Prometheus · Grafana · Node Exporter · Ansible
 
 **Cloud**
 AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Secrets Manager · Terraform
 
 **Development**
-React Native · Expo · Kotlin · JavaScript · PHP · HTML · CSS
+React Native · Expo · React · Kotlin · JavaScript · PHP · HTML · CSS
 
 **Tools**
 Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
