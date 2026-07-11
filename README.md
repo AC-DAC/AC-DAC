@@ -97,7 +97,9 @@ CI/CD pipeline: GitHub Actions `test → build → submit` on version tag push. 
 ---
 
 ### [Quicklinks](https://github.com/AC-DAC/Quicklinks-Public)
-WordPress plugin built at Ironbark Marketing that generates a branded link directory page at `yourdomain.com/quicklinks/`. Customisable profile image, background and button colours, drag-and-drop link reordering. CI/CD pipeline via GitHub Actions: PHPCS validation enforcing WordPress Coding Standards, zip packaging, and automated GitHub Releases on version tag push.
+WordPress plugin built at Ironbark Marketing that generates a branded link directory page at `yourdomain.com/quicklinks/`. Customisable profile image, background and button colours, drag-and-drop link reordering. Tested up to WordPress 7.0.1 / PHP 8.3.
+
+Key implementation decisions: virtual page architecture (rewrite rule + `template_redirect`) replaces the original auto-created WordPress page — nothing exists to accidentally delete or conflict with; per-version upgrade routine trashes the legacy page on overwrite-install. Self-hosted update pipeline via WordPress's native `update_plugins_ironbarkmarketing.com` filter (WP 5.8+) — token-gated JSON manifest on the Ironbark server feeds the standard wp-admin update UI and Dashboard → Updates, so clients update Quicklinks like any other plugin. CI/CD pipeline via GitHub Actions: PHPCS + WordPress-Extra ruleset, zip packaging, GitHub Release, and automated FTPS deploy of the zip and regenerated manifest to the update server on every version tag.
 
 <table>
   <tr>
