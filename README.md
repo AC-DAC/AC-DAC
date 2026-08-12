@@ -1,7 +1,7 @@
 # Hey, I'm Alex 👋
-Digital Producer with 14+ years in multimedia and design, transitioning into DevOps engineering. I bring systems thinking from a production background, understanding how things are built, delivered, and maintained, and I'm applying that to infrastructure, automation, and deployment pipelines.
+My background is in IT/Multimedia with over 15 years of experience across design, digital production, web and software development. I build and maintain self-hosted infrastructure, automate deployment pipelines, and apply systems thinking from a production background to the infrastructure layer.
 
-I started in graphic design where details matter because someone experiences them. Then spent a decade as a Digital Producer, translating between human experience and technical execution. DevOps was the natural next step. It's the same translation problem, just at the infrastructure layer instead of the interface layer.
+I started in graphic design where details matter because someone experiences them. Then spent over a decade as a Digital Producer, translating between human experience and technical execution. The infrastructure work is the same translation problem, just further down the stack.
 
         ┌─────────────────────────────┐
         │         ABSTRACTION         │
@@ -33,36 +33,44 @@ I started in graphic design where details matter because someone experiences the
 
 ---
 
-## What I'm Working On
-**Live Translator** — a mobile web app for real-time Korean speech-to-English translation, built for live video calls with Korean-speaking family. Most translation apps (Google Translate, Papago, Microsoft Translator) stop transcribing on silence, which breaks natural conversation with a speaker who pauses mid-sentence. This captures continuously and only stops when explicitly told to.
-
-The interesting constraint: the target phone runs GrapheneOS, which blocks Google Play Services — so the browser-native Web Speech API (which depends on Google's speech recognition) simply doesn't work there. That ruled out the obvious approach and pushed the whole STT/translation layer off-device onto edge compute instead.
-
+**Live Translator** — a self-hosted web app for real-time Korean↔English translation and structured Korean language learning, built for live video calls with Korean-speaking family and for practising between calls.
+ 
+The problem: every common translation app (Google Translate, Papago, Microsoft Translator) stops transcribing on silence. Natural conversation — especially with an elder speaker — has 3–5 second pauses between thoughts. Every pause kills the transcript and breaks the flow. This app captures continuously using silence-boundary segmentation instead of fixed intervals, so utterances aren't cut mid-sentence and context carries across the conversation.
+ 
+The constraint that shaped everything: the target phone runs GrapheneOS, which blocks Google Play Services. The browser-native Web Speech API depends on Google's speech recognition — blocked entirely. That pushed the whole STT/translation/TTS layer off-device onto edge compute and ruled out browser-native speech recognition across the entire app.
+ 
 ```
 ┌──────────────────────────────────┐
-│  Pi (self-hosted)                │
-│  nginx — static hosting          │
-│  serves React build only         │
+│  Mac (BlackHole virtual audio)   │
+│  captures call audio digitally   │
 └────────────┬─────────────────────┘
-             │ 1. loads app
+             │ 1. clean audio, no re-recording
              ▼
 ┌──────────────────────────────────┐
-│  Phone (any browser)             │
-│  React SPA                       │
-│  MediaRecorder API               │
+│  Browser — React SPA             │
+│  AudioWorklet, silence-boundary  │
+│  VAD segments per utterance      │
 └────────────┬─────────────────────┘
-             │ 2. audio chunks
+             │ 2. WAV per utterance
              ▼
 ┌──────────────────────────────────┐
 │  Cloudflare Workers AI           │
-│  Whisper → Korean STT            │
-│  Llama 3.1 → English translation │
+│  Whisper large-v3-turbo → STT    │
+│  Gemma 4 → translation (both     │
+│  directions, rolling context)    │
+└────────────┬─────────────────────┘
+             │ 3. static build served by
+             ▼
+┌──────────────────────────────────┐
+│  Pi (self-hosted)                │
+│  nginx + Cloudflare Tunnel       │
+│  (no inbound ports required)     │
 └──────────────────────────────────┘
 ```
-
-Audio capture via MediaRecorder API (works in any browser, no Google services required), streamed to Cloudflare Workers AI: Whisper handles Korean STT, Llama 3.1 8B handles translation with a rolling context window for coherence across sentences. Self-hosted on the same Raspberry Pi running the rest of the home lab — nginx serves the static build only, no backend proxy needed since the browser talks to Workers AI directly. Security layered across Cloudflare Access (email-allowlisted PIN gate on the subdomain), the Workers AI API key living only in the Worker's environment, and nginx rate limiting as a backstop.
-
-`React` `Cloudflare Workers AI` `Whisper` `Llama 3.1` `nginx` `systemd` `Let's Encrypt` `Cloudflare`
+ 
+Audio capture via AudioWorklet (replaced an earlier MediaRecorder approach — Whisper rejects WebM outright, and fixed-interval chunking cut Korean's subject-object-verb sentences mid-utterance). Streamed to Cloudflare Workers AI: Whisper handles Korean STT with a forced language hint, Gemma 4 handles translation in both directions with a rolling context window for coherence and correct pronoun resolution across turns. A companion Study tab (spaced curriculum, tile-arrangement practice, pronunciation scoring via Azure Speech) turns the same conversational data into a structured learning tool. Self-hosted on the same Raspberry Pi running the rest of the home lab — nginx serves the static build, no backend proxy needed since the browser talks to Workers AI directly. Security layered across Cloudflare Access (email-allowlisted PIN gate on the subdomain), API keys living only in the Worker's environment, and nginx rate limiting as a backstop.
+ 
+`React` `Cloudflare Workers AI` `Whisper` `Gemma 4` `Azure Speech` `nginx` `systemd` `Let's Encrypt` `Cloudflare`
 
 ---
 
@@ -206,7 +214,7 @@ Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
 ---
 
 ## Background
-Before pivoting to DevOps I spent 6+ years as a Digital Producer at Ironbark Marketing, spanning UI/UX design, front-end development, WordPress plugin development, and multimedia production. That background shapes how I approach infrastructure: documentation, system design, and the gap between what developers build and what operations teams maintain.
+7+ years as a Digital Producer at Ironbark Marketing, spanning UI/UX design, front-end development, WordPress plugin development, and multimedia production. That background shapes how I approach infrastructure: documentation, system design, and the gap between what developers build and what operations teams maintain.
 
 ---
 
