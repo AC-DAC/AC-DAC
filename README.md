@@ -33,12 +33,21 @@ I started in graphic design where details matter because someone experiences the
  
 ---
  
-**Live Translator** — a self-hosted web app for real-time Korean↔English translation and structured Korean language learning, built for live video calls with Korean-speaking family and for practising between calls.
+## What I'm working on
+
+**Lingus** — building out the Study curriculum and working toward streaming STT (Azure ko-KR) for lower live-call latency. Production deployed at `lingus.alexchuc.au`.
+
+**Digiart** — a sound-reactive generative particle simulation on an ESP32-S3 AI Smart Robot (1.54" colour LCD, built-in mic, one programmable button). Ambient dB level and button events perturb a simulated world in real time. Exploratory.
+
+---
+
+## Projects
  
-The problem: every common translation app (Google Translate, Papago, Microsoft Translator) stops transcribing on silence. Natural conversation — especially with an elder speaker — has 3–5 second pauses between thoughts. Every pause kills the transcript and breaks the flow. This app captures continuously using silence-boundary segmentation instead of fixed intervals, so utterances aren't cut mid-sentence and context carries across the conversation.
- 
-The constraint that shaped everything: the target phone runs GrapheneOS, which blocks Google Play Services. The browser-native Web Speech API depends on Google's speech recognition — blocked entirely. That pushed the whole STT/translation/TTS layer off-device onto edge compute and ruled out browser-native speech recognition across the entire app.
- 
+### [Lingus — Live Korean Translator & Language Learning](https://github.com/AC-DAC/Lingus-Public)
+Self-hosted Korean ↔ English language tool built for live calls (voice/video) with Korean-speaking family and for structured study between calls. Three tabs: **Listen** (real-time KO→EN transcription), **Speak** (EN→KO composition with bidirectional voice input), and **Study** (staged curriculum, pronunciation scoring, spaced recall).
+
+The core problem: every common translation app stops transcribing on silence. Natural conversation — especially with an elder speaker — has 3–5 second pauses between thoughts. A secondary constraint shaped the whole architecture: the target phone runs GrapheneOS, which blocks Google Play Services and the browser-native Web Speech API entirely. That pushed the full STT/translation/TTS stack off-device onto edge compute.
+
 ```
 ┌──────────────────────────────────┐
 │  Mac (BlackHole virtual audio)   │
@@ -48,34 +57,34 @@ The constraint that shaped everything: the target phone runs GrapheneOS, which b
              ▼
 ┌──────────────────────────────────┐
 │  Browser — React SPA             │
-│  AudioWorklet, silence-boundary  │
+│  AudioWorklet · silence-boundary │
 │  VAD segments per utterance      │
 └────────────┬─────────────────────┘
              │ 2. WAV per utterance
              ▼
 ┌──────────────────────────────────┐
 │  Cloudflare Workers AI           │
-│  Whisper large-v3-turbo → STT    │
-│  Gemma 4 → translation (both     │
-│  directions, rolling context)    │
+│  Whisper large-v3-turbo → STT   │
+│  Gemma 4 → translation           │
+│  (both directions, 5-turn        │
+│  rolling context window)         │
 └────────────┬─────────────────────┘
-             │ 3. static build served by
+             │ 3. static build + Pi-side persistence
              ▼
 ┌──────────────────────────────────┐
-│  Pi (self-hosted)                │
-│  nginx + Cloudflare Tunnel       │
+│  Pi 4B (self-hosted)             │
+│  nginx · Cloudflare Tunnel       │
+│  studystore service (Python)     │
 │  (no inbound ports required)     │
 └──────────────────────────────────┘
 ```
- 
-Audio capture via AudioWorklet (replaced an earlier MediaRecorder approach — Whisper rejects WebM outright, and fixed-interval chunking cut Korean's subject-object-verb sentences mid-utterance). Streamed to Cloudflare Workers AI: Whisper handles Korean STT with a forced language hint, Gemma 4 handles translation in both directions with a rolling context window for coherence and correct pronoun resolution across turns. A companion Study tab (spaced curriculum, tile-arrangement practice, pronunciation scoring via Azure Speech) turns the same conversational data into a structured learning tool. Self-hosted on the same Raspberry Pi running the rest of the home lab — nginx serves the static build, no backend proxy needed since the browser talks to Workers AI directly. Security layered across Cloudflare Access (email-allowlisted PIN gate on the subdomain), API keys living only in the Worker's environment, and nginx rate limiting as a backstop.
- 
-`React` `Cloudflare Workers AI` `Whisper` `Gemma 4` `Azure Speech` `nginx` `systemd` `Let's Encrypt` `Cloudflare`
+
+Key implementation decisions: AudioWorklet with silence-boundary VAD replaced MediaRecorder — Whisper rejects WebM, and fixed-interval chunking cut Korean's SOV sentences mid-utterance. Gemma 4 chosen over Llama after benchmarking concurrent load and Korean subject-pronoun accuracy. A deterministic Korean numeral parser handles dates, times, and money amounts — the LLM produced consistent numeral errors that code eliminates entirely. A client-side idiom dictionary flags figurative meanings pattern-matched against the transcript, surviving STT errors on known phrases. Study curriculum and Speak conversation history persist server-side on the Pi after browser localStorage was evicted under memory pressure. Cloudflare Tunnel replaces port forwarding after ISP blocked inbound ports on the residential plan.
+
+`React` `Cloudflare Workers AI` `Whisper large-v3-turbo` `Gemma 4` `Azure Speech` `Python` `nginx` `Cloudflare Tunnel` `Cloudflare Access` `Let's Encrypt` `systemd` `Raspberry Pi`
  
 ---
- 
-## Projects
- 
+
 ### [FitForge](https://github.com/AC-DAC/FitForge-Public)
 Privacy-first workout tracking app for Android. No ads, no account required, all data stored on-device. Features custom workout creation, guided session mode, stats and insights, reminders, and QR code workout sharing. Built in React Native / Expo with a custom Material Design-inspired design system. Currently in closed testing on the Google Play Store.
  
@@ -202,7 +211,10 @@ Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · 
 AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Secrets Manager · Terraform
  
 **Development**
-React Native · Expo · React · Kotlin · JavaScript · PHP · HTML · CSS
+React Native · Expo · React · Kotlin · JavaScript · Python · PHP · HTML · CSS
+ 
+**AI & Speech**
+Whisper large-v3-turbo · Gemma 4 · Azure Speech · Cloudflare Workers AI
  
 **Tools**
 Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
