@@ -81,6 +81,8 @@ The core problem: every common translation app stops transcribing on silence. Na
 
 Key implementation decisions: AudioWorklet with silence-boundary VAD replaced MediaRecorder — Whisper rejects WebM, and fixed-interval chunking cut Korean's SOV sentences mid-utterance. Gemma 4 chosen over Llama after benchmarking concurrent load and Korean subject-pronoun accuracy. A deterministic Korean numeral parser handles dates, times, and money amounts — the LLM produced consistent numeral errors that code eliminates entirely. A client-side idiom dictionary flags figurative meanings pattern-matched against the transcript, surviving STT errors on known phrases. Study curriculum and Speak conversation history persist server-side on the Pi after browser localStorage was evicted under memory pressure. Cloudflare Tunnel replaces port forwarding after ISP blocked inbound ports on the residential plan.
 
+![Lingus Listen — live Korean transcription with pipeline health rail](assets/screenshots/listen-1.png)
+
 `React` `Cloudflare Workers AI` `Whisper large-v3-turbo` `Gemma 4` `Azure Speech` `Python` `nginx` `Cloudflare Tunnel` `Cloudflare Access` `Let's Encrypt` `systemd` `Raspberry Pi`
  
 ---
