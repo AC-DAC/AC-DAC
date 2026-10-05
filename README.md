@@ -63,8 +63,8 @@ The core problem: every common translation app stops transcribing on silence. Na
              │ 2. WAV per utterance
              ▼
 ┌──────────────────────────────────┐
+│  Azure Speech (ko-KR) → STT      │
 │  Cloudflare Workers AI           │
-│  Whisper large-v3-turbo → STT   │
 │  Gemma 4 → translation           │
 │  (both directions, 5-turn        │
 │  rolling context window)         │
@@ -79,11 +79,11 @@ The core problem: every common translation app stops transcribing on silence. Na
 └──────────────────────────────────┘
 ```
 
-Key implementation decisions: AudioWorklet with silence-boundary VAD replaced MediaRecorder — Whisper rejects WebM, and fixed-interval chunking cut Korean's SOV sentences mid-utterance. Gemma 4 chosen over Llama after benchmarking concurrent load and Korean subject-pronoun accuracy. A deterministic Korean numeral parser handles dates, times, and money amounts — the LLM produced consistent numeral errors that code eliminates entirely. A client-side idiom dictionary flags figurative meanings pattern-matched against the transcript, surviving STT errors on known phrases. Study curriculum and Speak conversation history persist server-side on the Pi after browser localStorage was evicted under memory pressure. Cloudflare Tunnel replaces port forwarding after ISP blocked inbound ports on the residential plan.
+Key implementation decisions: AudioWorklet with silence-boundary VAD replaced MediaRecorder — the original STT engine (Whisper) rejected WebM, and fixed-interval chunking cut Korean's SOV sentences mid-utterance. Azure Speech replaced Whisper on Workers AI after testing showed cold starts stalling transcription mid-call; Azure had none. Gemma 4 chosen over Llama after benchmarking concurrent load and Korean subject-pronoun accuracy. A deterministic Korean numeral parser handles dates, times, and money amounts — the LLM produced consistent numeral errors that code eliminates entirely. A client-side idiom dictionary flags figurative meanings pattern-matched against the transcript, surviving STT errors on known phrases. Study curriculum and Speak conversation history persist server-side on the Pi after browser localStorage was evicted under memory pressure. Cloudflare Tunnel replaces port forwarding after ISP blocked inbound ports on the residential plan.
 
 ![Lingus Listen — live Korean transcription with pipeline health rail](assets/screenshots/listen-1.png)
 
-`React` `Cloudflare Workers AI` `Whisper large-v3-turbo` `Gemma 4` `Azure Speech` `Python` `nginx` `Cloudflare Tunnel` `Cloudflare Access` `Let's Encrypt` `systemd` `Raspberry Pi`
+`React` `Cloudflare Workers AI` `Gemma 4` `Azure Speech` `Python` `nginx` `Cloudflare Tunnel` `Cloudflare Access` `Let's Encrypt` `systemd` `Raspberry Pi`
  
 ---
 
@@ -146,12 +146,14 @@ Self-hosted NAS on a Raspberry Pi 4B, replacing an end-of-life Netgear ReadyNAS.
 Key implementation decisions: OMV rejected to avoid conflicts with existing Pi services; Time Machine rejected (all-or-nothing system backup); cron replaced with anacron for missed-run tolerance; FileBrowser original replaced with Quantum fork after diagnosing a routing bug in v2.63.4; powered USB hub added after diagnosing Pi 4B USB power budget limitation via dmesg. CVE patched same session as release.
  
 Monitoring stack: Node Exporter + Grafana Alloy on the Pi, Prometheus + Loki + Grafana on a separate host (Docker Compose). Custom textfile collector metrics for backup job success (`backup_last_success`) and RAID array health (`raid_health`). Centralised log aggregation via Alloy → Loki — UFW blocks, SSH failures, and sudo events queryable in Grafana. Alert rules fire to email on backup failure, array degradation, high CPU, and SSH brute force detection.
+
+Update management: container images pinned to exact versions, with self-hosted Renovate on GitHub Actions (private GitHub App, 7-day release age) opening a PR for each new version. FileBrowser Quantum updates run through an Ansible playbook that backs up the binary and database, health-checks, and rolls back automatically on failure.
  
-External access via Cloudflare Tunnel — replaces port forwarding after ISP change blocked inbound ports on residential plan. Pi static IP configured via systemd-networkd for stability across router reboots.
+External access via Cloudflare Tunnel — replaces port forwarding after ISP change blocked inbound ports on residential plan. Pi static IP configured via a DHCP reservation on the router for stability across router reboots.
  
 ![Pi Monitor Dashboard](https://raw.githubusercontent.com/AC-DAC/pi-nas/main/assets/screenshots/grafana-pi-monitor.png)
  
-`mdadm` `ext4` `rsync` `anacron` `systemd` `Linux` `SSH` `Prometheus` `Grafana` `Node Exporter` `Loki` `Alloy` `Cloudflare Tunnel`
+`mdadm` `ext4` `rsync` `anacron` `systemd` `Linux` `SSH` `Prometheus` `Grafana` `Node Exporter` `Loki` `Alloy` `Cloudflare Tunnel` `Renovate` `Ansible`
  
 ---
  
@@ -159,6 +161,8 @@ External access via Cloudflare Tunnel — replaces port forwarding after ISP cha
 Network-wide DNS-based ad/tracker filtering for the home lab, deployed on the same Raspberry Pi 4B already running Pi NAS and Aersia. No application code in this repo — the deliverable is the architecture, the security review process, and two debugging case studies, written up as a standalone documentation repo rather than a thing to clone and run.
  
 Key implementation decisions: four-category security review applied to the install script before execution (external fetches, obfuscation, excessive permissions, rogue persistence) rather than trusting `curl | bash` on faith; failure-domain analysis rejecting a second Pi-hole as DNS2 fallback since it would share the same host/power/storage as the primary; DNS-01 (not HTTP-01) certificate challenge for an intentionally internet-unreachable admin subdomain. Diagnosed and resolved a live incident where a port-binding conflict silently broke an unrelated service's IPv6 traffic, and separately ruled out a false alarm that looked like a filtering failure but traced to an unrelated browser privacy setting.
+
+Updates: `pihole -up` can't be version-pinned, so a daily systemd timer logs version state to the journal → Alloy → Loki, and a Grafana alert rule (provisioned from git) emails when an update is pending. An Ansible playbook applies it: Teleporter backup, update, DNS health check, settings restored on failure.
  
 ```
   LAN device ──▶ Filtering host ──▶ Matches blocklist?
@@ -170,7 +174,7 @@ Key implementation decisions: four-category security review applied to the insta
                               (blocked locally)     upstream resolver
 ```
  
-`Linux` `DNS` `Nginx` `systemd` `Let's Encrypt` `Security Review` `Raspberry Pi`
+`Linux` `DNS` `Nginx` `systemd` `Let's Encrypt` `Security Review` `Raspberry Pi` `Ansible` `Grafana`
  
 ---
  
@@ -207,7 +211,7 @@ CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached
 ## Technologies
  
 **Infrastructure & DevOps**
-Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · DNS · Cloudflare · Cloudflare Tunnel · Cloudflare Workers AI · Let's Encrypt · Certbot · EAS CLI · Prometheus · Grafana · Loki · Alloy · Node Exporter · Ansible
+Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · DNS · Cloudflare · Cloudflare Tunnel · Cloudflare Workers AI · Let's Encrypt · Certbot · EAS CLI · Prometheus · Grafana · Loki · Alloy · Node Exporter · Ansible · Renovate
  
 **Cloud**
 AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Secrets Manager · Terraform
@@ -216,7 +220,7 @@ AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Sec
 React Native · Expo · React · Kotlin · JavaScript · Python · PHP · HTML · CSS
  
 **AI & Speech**
-Whisper large-v3-turbo · Gemma 4 · Azure Speech · Cloudflare Workers AI
+Azure Speech · Gemma 4 · Cloudflare Workers AI
  
 **Tools**
 Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
