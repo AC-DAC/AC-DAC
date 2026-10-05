@@ -149,7 +149,7 @@ Monitoring stack: Node Exporter + Grafana Alloy on the Pi, Prometheus + Loki + G
 
 Update management: container images pinned to exact versions, with self-hosted Renovate on GitHub Actions (private GitHub App, 7-day release age) opening a PR for each new version. FileBrowser Quantum updates run through an Ansible playbook that backs up the binary and database, health-checks, and rolls back automatically on failure.
  
-External access via Cloudflare Tunnel — replaces port forwarding after ISP change blocked inbound ports on residential plan. Pi static IP configured via a DHCP reservation on the router for stability across router reboots.
+External access via Cloudflare Tunnel — replaces port forwarding after ISP change blocked inbound ports on residential plan. Pi IP fixed via a DHCP reservation on the router.
  
 ![Pi Monitor Dashboard](https://raw.githubusercontent.com/AC-DAC/pi-nas/main/assets/screenshots/grafana-pi-monitor.png)
  
