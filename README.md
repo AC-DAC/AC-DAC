@@ -37,8 +37,6 @@ I started in graphic design where details matter because someone experiences the
 
 **Lingus** — building out the Study curriculum and working toward streaming STT (Azure ko-KR) for lower live-call latency. Production deployed at `lingus.alexchuc.au`.
 
-**Digiart** — a sound-reactive generative particle simulation on an ESP32-S3 AI Smart Robot (1.54" colour LCD, built-in mic, one programmable button). Ambient dB level and button events perturb a simulated world in real time. Exploratory.
-
 ---
 
 ## Projects
