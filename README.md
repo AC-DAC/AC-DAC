@@ -211,7 +211,7 @@ CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached
 ## Technologies
  
 **Infrastructure & DevOps**
-Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · SSH · mdadm · ext4 · rsync · systemd · DNS · Cloudflare · Cloudflare Tunnel · Cloudflare Workers AI · Let's Encrypt · Certbot · EAS CLI · Prometheus · Grafana · Loki · Alloy · Node Exporter · Ansible · Renovate
+Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · Anacron · UFW · fail2ban · SSH · mdadm · ext4 · rsync · systemd · DNS · DNSSEC · Cloudflare · Cloudflare Tunnel · Cloudflare Access · Cloudflare Workers AI · Let's Encrypt · Certbot · OpenSSL · EAS CLI · Prometheus · Grafana · Loki · Alloy · Node Exporter · Ansible · Renovate
  
 **Cloud**
 AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Secrets Manager · Terraform
