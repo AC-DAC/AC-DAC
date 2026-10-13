@@ -83,6 +83,8 @@ Key implementation decisions: AudioWorklet with silence-boundary VAD replaced Me
 
 ![Lingus Listen — live Korean transcription with pipeline health rail](assets/screenshots/listen-1.png)
 
+Presented at the Claude Community Brisbane meetup (24 September 2026): *From Silence to Understanding: Building a Live Korean Translator*.
+
 `React` `Cloudflare Workers AI` `Gemma 4` `Azure Speech` `Python` `nginx` `Cloudflare Tunnel` `Cloudflare Access` `Let's Encrypt` `systemd` `Raspberry Pi`
  
 ---
@@ -208,6 +210,12 @@ CI/CD pipeline: GitHub Actions `assembleDebug` on version tag push, APK attached
  
 ---
  
+## Certifications
+
+**AWS Certified Cloud Practitioner** (CLF-C02) — July 2026
+
+---
+
 ## Technologies
  
 **Infrastructure & DevOps**
