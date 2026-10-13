@@ -1,7 +1,7 @@
 # Hey, I'm Alex 👋
 My background is in IT/Multimedia with over 15 years of experience across design, digital production, web and software development. I build and maintain self-hosted infrastructure, automate deployment pipelines, and apply systems thinking from a production background to the infrastructure layer.
  
-I started in graphic design where details matter because someone experiences them. Then spent over a decade as a Digital Producer, translating between human experience and technical execution. The infrastructure work is the same translation problem, just further down the stack.
+I started in graphic design where details matter because someone experiences them. Then spent nearly a decade as a Digital Producer, translating between human experience and technical execution. The infrastructure work is the same translation problem, just further down the stack.
  
         ┌─────────────────────────────┐
         │         ABSTRACTION         │
@@ -228,7 +228,7 @@ Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
 ---
  
 ## Background
-7+ years as a Digital Producer at Ironbark Marketing, spanning UI/UX design, front-end development, WordPress plugin development, and multimedia production. That background shapes how I approach infrastructure: documentation, system design, and the gap between what developers build and what operations teams maintain.
+Nearly 10 years as a Digital Producer — at Elites Wave from 2016, then Ironbark Marketing since 2019 — spanning UI/UX design, front-end development, WordPress plugin development, and multimedia production. That background shapes how I approach infrastructure: documentation, system design, and the gap between what developers build and what operations teams maintain.
  
 ---
  
