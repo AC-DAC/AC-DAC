@@ -81,7 +81,16 @@ The core problem: every common translation app stops transcribing on silence. Na
 └──────────────────────────────────┘
 ```
 
-Key implementation decisions: AudioWorklet with silence-boundary VAD replaced MediaRecorder — the original STT engine (Whisper) rejected WebM, and fixed-interval chunking cut Korean's SOV sentences mid-utterance. Azure Speech replaced Whisper on Workers AI after real-call measurement: Workers AI queueing stalled Whisper mid-call (4.5s mean, spikes to 11.6s), while Azure averaged 1.1s. Azure was later removed entirely: Listen now runs Whisper locally (whisper.cpp on the Mac) and all Korean audio comes from EchoVoice — no paid speech service, call audio never leaves the Mac, and Azure's Korean voice was rejected on all 10 lines of a blind listening test against Qwen3-TTS takes. Collapsing local Whisper's two requests per line into one brought it to a 1.1s median on a 210-clip benchmark, level with Azure. Spoken practice is graded on whether the learner was understood: the transcript is compared to the target by sound, through a Korean pronunciation converter, not by spelling — native-model accent scores had marked word-perfect lines as mispronounced. Gemma 4 chosen over Llama after benchmarking concurrent load and Korean subject-pronoun accuracy. A deterministic Korean numeral parser handles dates, times, and money amounts — the LLM produced consistent numeral errors that code eliminates entirely. A client-side idiom dictionary flags figurative meanings pattern-matched against the transcript, surviving STT errors on known phrases. Study curriculum and Speak conversation history persist server-side on the Pi after browser localStorage was evicted under memory pressure. Cloudflare Tunnel replaces port forwarding after ISP blocked inbound ports on the residential plan.
+Key implementation decisions:
+
+- **STT: Whisper → Azure → local Whisper.** Workers AI queueing stalled Whisper mid-call (4.5s mean, spikes to 11.6s), so Azure (1.1s) replaced it. Azure was later removed entirely: no paid speech service, call audio never leaves the Mac, and its Korean voice was rejected on all 10 lines of a blind listening test. Local whisper.cpp now runs at a 1.1s median on a 210-clip benchmark, level with Azure.
+- **Voices from EchoVoice** — fine-tuned Qwen3-TTS, pre-rendered and served from the Pi.
+- **Graded on being understood, not on accent.** The transcript is compared to the target by sound through a Korean pronunciation converter — native-model accent scores had marked word-perfect lines as mispronounced.
+- **AudioWorklet with silence-boundary VAD** replaced MediaRecorder — fixed-interval chunking cut Korean's SOV sentences mid-utterance.
+- **Gemma 4 over Llama** after benchmarking concurrent load and Korean subject-pronoun accuracy.
+- **The LLM does language; code does the math.** A deterministic numeral parser handles dates, times and money after consistent model errors.
+- **Client-side idiom dictionary** flags figurative meanings, matched by pattern so it survives STT errors.
+- **Pi-side persistence** for Study and Speak after browser localStorage was evicted under memory pressure; **Cloudflare Tunnel** after the ISP blocked inbound ports.
 
 ![Lingus Listen — live Korean transcription with pipeline health rail](assets/screenshots/listen-1.png)
 
