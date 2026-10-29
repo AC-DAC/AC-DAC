@@ -35,14 +35,16 @@ I started in graphic design where details matter because someone experiences the
  
 ## What I'm working on
 
-**Lingus** — building out the Study curriculum and working toward streaming STT (Azure ko-KR) for lower live-call latency. Production deployed at `lingus.alexchuc.au`.
+**Lingus** — translation accuracy on live calls, Story (read-along Korean stories, voiced line by line, read back and scored), and spoken scoring. Production deployed at `lingus.alexchuc.au`.
+
+**EchoVoice** — a local voice engine on the Mac: text in, natural-sounding speech out. Qwen3-TTS on MLX, with every take scored by a judge (Whisper transcript, speaker similarity, MOS prediction, signal checks) and re-rolled on failure. It already produces all of Lingus's Korean audio — the homelab and hardware were already there, so self-hosting beat paying for a cloud TTS service. PDF narration and assistant voices are next. Private for now.
 
 ---
 
 ## Projects
  
 ### [Lingus — Live Korean Translator & Language Learning](https://github.com/AC-DAC/Lingus-Public)
-Self-hosted Korean ↔ English language tool built for live calls (voice/video) with Korean-speaking family and for structured study between calls. Three tabs: **Listen** (real-time KO→EN transcription), **Speak** (EN→KO composition with bidirectional voice input), and **Study** (staged curriculum, pronunciation scoring, spaced recall).
+Self-hosted Korean ↔ English language tool built for live calls (voice/video) with Korean-speaking family and for structured study between calls. Three tabs: **Listen** (real-time KO→EN transcription), **Speak** (EN→KO composition with bidirectional voice input), and **Study** (staged curriculum, read-along stories, spoken scoring, spaced recall).
 
 The core problem: every common translation app stops transcribing on silence. Natural conversation — especially with an elder speaker — has 3–5 second pauses between thoughts. A secondary constraint shaped the whole architecture: the target phone runs GrapheneOS, which blocks Google Play Services and the browser-native Web Speech API entirely. That pushed the full STT/translation/TTS stack off-device onto edge compute.
 
@@ -61,11 +63,12 @@ The core problem: every common translation app stops transcribing on silence. Na
              │ 2. WAV per utterance
              ▼
 ┌──────────────────────────────────┐
-│  Azure Speech (ko-KR) → STT      │
-│  Cloudflare Workers AI           │
-│  Gemma 4 → translation           │
-│  (both directions, 5-turn        │
-│  rolling context window)         │
+│  Whisper → STT                   │
+│  (whisper.cpp on the Mac for     │
+│  calls; Workers AI on the phone) │
+│  Gemma 4 on Workers AI →         │
+│  translation (both directions,   │
+│  5-turn rolling context window)  │
 └────────────┬─────────────────────┘
              │ 3. static build + Pi-side persistence
              ▼
@@ -73,17 +76,18 @@ The core problem: every common translation app stops transcribing on silence. Na
 │  Pi 4B (self-hosted)             │
 │  nginx · Cloudflare Tunnel       │
 │  studystore service (Python)     │
+│  EchoVoice Korean audio clips    │
 │  (no inbound ports required)     │
 └──────────────────────────────────┘
 ```
 
-Key implementation decisions: AudioWorklet with silence-boundary VAD replaced MediaRecorder — the original STT engine (Whisper) rejected WebM, and fixed-interval chunking cut Korean's SOV sentences mid-utterance. Azure Speech replaced Whisper on Workers AI after real-call measurement: Workers AI queueing stalled Whisper mid-call (4.5s mean, spikes to 11.6s), while Azure averaged 1.1s. Gemma 4 chosen over Llama after benchmarking concurrent load and Korean subject-pronoun accuracy. A deterministic Korean numeral parser handles dates, times, and money amounts — the LLM produced consistent numeral errors that code eliminates entirely. A client-side idiom dictionary flags figurative meanings pattern-matched against the transcript, surviving STT errors on known phrases. Study curriculum and Speak conversation history persist server-side on the Pi after browser localStorage was evicted under memory pressure. Cloudflare Tunnel replaces port forwarding after ISP blocked inbound ports on the residential plan.
+Key implementation decisions: AudioWorklet with silence-boundary VAD replaced MediaRecorder — the original STT engine (Whisper) rejected WebM, and fixed-interval chunking cut Korean's SOV sentences mid-utterance. Azure Speech replaced Whisper on Workers AI after real-call measurement: Workers AI queueing stalled Whisper mid-call (4.5s mean, spikes to 11.6s), while Azure averaged 1.1s. Azure was later removed entirely: Listen now runs Whisper locally (whisper.cpp on the Mac) and all Korean audio comes from EchoVoice — no paid speech service, call audio never leaves the Mac, and Azure's Korean voice was rejected on all 10 lines of a blind listening test against Qwen3-TTS takes. Collapsing local Whisper's two requests per line into one brought it to a 1.1s median on a 210-clip benchmark, level with Azure. Spoken practice is graded on whether the learner was understood: the transcript is compared to the target by sound, through a Korean pronunciation converter, not by spelling — native-model accent scores had marked word-perfect lines as mispronounced. Gemma 4 chosen over Llama after benchmarking concurrent load and Korean subject-pronoun accuracy. A deterministic Korean numeral parser handles dates, times, and money amounts — the LLM produced consistent numeral errors that code eliminates entirely. A client-side idiom dictionary flags figurative meanings pattern-matched against the transcript, surviving STT errors on known phrases. Study curriculum and Speak conversation history persist server-side on the Pi after browser localStorage was evicted under memory pressure. Cloudflare Tunnel replaces port forwarding after ISP blocked inbound ports on the residential plan.
 
 ![Lingus Listen — live Korean transcription with pipeline health rail](assets/screenshots/listen-1.png)
 
 Presented at the Claude Community Brisbane meetup (24 September 2026): *From Silence to Understanding: Building a Live Korean Translator*.
 
-`React` `Cloudflare Workers AI` `Gemma 4` `Azure Speech` `Python` `nginx` `Cloudflare Tunnel` `Cloudflare Access` `Let's Encrypt` `systemd` `Raspberry Pi`
+`React` `Cloudflare Workers AI` `Gemma 4` `Whisper` `whisper.cpp` `Python` `nginx` `Cloudflare Tunnel` `Cloudflare Access` `Let's Encrypt` `systemd` `Raspberry Pi`
  
 ---
 
@@ -91,6 +95,8 @@ Presented at the Claude Community Brisbane meetup (24 September 2026): *From Sil
 Privacy-first workout tracking app for Android. No ads, no account required, all data stored on-device. Features custom workout creation, guided session mode, stats and insights, reminders, and QR code workout sharing. Built in React Native / Expo with a custom Material Design-inspired design system. Currently in closed testing on the Google Play Store.
  
 CI/CD pipeline: GitHub Actions `test → build → submit` on version tag push. Jest unit test suite. EAS Build produces AAB artifact; EAS Submit delivers to Play Store internal track via Google Service Account (least-privilege permissions). Actions pinned to immutable commit SHAs with `permissions: contents: read` at workflow level. Lefthook + gitleaks for pre-commit secret scanning.
+
+Security audit workflow, separate from the release pipeline (every PR, weekly, on demand): `npm audit` fails on any high/critical advisory not in an allowlist, and each allowlist entry records why it's tolerable and a review-by date. Where a patched release exists, the transitive dependency is pinned via `overrides` instead — a new third-party advisory flags a PR rather than blocking a tagged release.
  
 <table>
   <tr>
@@ -147,7 +153,7 @@ Key implementation decisions: OMV rejected to avoid conflicts with existing Pi s
  
 Monitoring stack: Node Exporter + Grafana Alloy on the Pi, Prometheus + Loki + Grafana on a separate host (Docker Compose). Custom textfile collector metric for backup job success (`backup_last_success`); array health from Node Exporter's native mdadm metrics. Centralised log aggregation via Alloy → Loki — UFW blocks, SSH failures, sudo events and kernel disk errors queryable in Grafana. Alert rules, provisioned from git, email on array degradation, USB/disk link errors (early warning before a disk is dropped), failed or stale backups, host unreachable, high CPU and SSH brute force — each repeating at most daily. Monthly mdadm scrub checks both mirrors.
 
-Update management: container images pinned to exact versions, with self-hosted Renovate on GitHub Actions (private GitHub App, 7-day release age) opening a PR for each new version. FileBrowser Quantum updates run through an Ansible playbook that backs up the binary and database, health-checks, and rolls back automatically on failure.
+Update management: container images pinned to exact versions, with self-hosted Renovate on GitHub Actions (private GitHub App, 7-day release age) opening a PR for each new version. FileBrowser Quantum updates run through an Ansible playbook that backs up the binary and database, health-checks, and rolls back automatically on failure. The Pi's config and FileBrowser's SQLite database are backed up to the NAS nightly. A Loki alert on failed certbot renewals was added after renewals were found to have failed silently for a month (revoked API token).
  
 External access via Cloudflare Tunnel — replaces port forwarding after ISP change blocked inbound ports on residential plan. Pi IP fixed via a DHCP reservation on the router.
  
@@ -226,7 +232,7 @@ AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Sec
 React Native · Expo · React · Kotlin · JavaScript · Python · PHP · HTML · CSS
  
 **AI & Speech**
-Azure Speech · Gemma 4 · Cloudflare Workers AI
+Whisper · whisper.cpp · Qwen3-TTS · MLX · Gemma 4 · Cloudflare Workers AI
  
 **Tools**
 Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
