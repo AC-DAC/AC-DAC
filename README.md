@@ -144,16 +144,6 @@ Key implementation decisions: virtual page architecture (rewrite rule + `templat
  
 ---
  
-### [Mothership — Centralised WordPress Management Infrastructure](https://github.com/AC-DAC/Mothership-Public)
-Self-hosted centralised management dashboard for 15+ production WordPress client sites, built on MainWP and deployed to a dedicated subdomain. Replaces a manual, site-by-site update workflow with a single control plane covering bulk updates, uptime monitoring, and security visibility across all managed sites.
- 
-Key implementation decisions: real server-level cron over WP-Cron (unreliable on a low-traffic dashboard-only subdomain); per-site OpenSSL key pairs with Unique Security IDs replacing password authentication; maintenance mode for frontend obscurity after directory password protection was evaluated and rejected (intercepts WordPress core HTTP requests). Backup strategy layered across UpdraftPlus per-site (weekly) and VentraIP server-level hourly snapshots.
- 
-![Mothership Dashboard](assets/screenshots/mothership-dashboard.jpg)
- 
-`MainWP` `WordPress` `Apache` `MariaDB` `Linux` `Cron`
- 
----
  
 ### [Pi NAS — Self-Hosted Network Storage](https://github.com/AC-DAC/pi-nas)
 Self-hosted NAS on a Raspberry Pi 4B, replacing an end-of-life Netgear ReadyNAS. Two 1TB NVMe SSDs in a software RAID 1 array via mdadm, served through FileBrowser Quantum over the local network. Daily incremental backup of selected folders from connected devices via rsync over SSH, managed by anacron.
