@@ -37,7 +37,7 @@ I started in graphic design where details matter because someone experiences the
 
 **Lingus** — translation accuracy on live calls, Story (read-along Korean stories, voiced line by line, read back and scored), and spoken scoring. Production deployed at `lingus.alexchuc.au`.
 
-**[EchoVoice](https://github.com/AC-DAC/EchoVoice-Public)** — a local voice engine on the Mac: text in, natural-sounding speech out. Qwen3-TTS on MLX, with every take scored by a judge (Whisper transcript, speaker similarity, MOS prediction, signal checks) and re-rolled on failure. It produces all of Lingus's Korean audio, turns documents into audiobooks with a read-along view and local chapter summaries, and voices a desktop assistant. Every voice is chosen and tuned in blind listening tests. The homelab and hardware were already there, so self-hosting beat paying for a cloud TTS service.
+**Grotto** — an offline AI story game, built to see how far prompt engineering and code-level guardrails can take a small local model before reaching for a bigger one. The model was chosen by a quantisation benchmark and a pre-registered blind evaluation; it runs on Ollama with prompt caching, in an Ink terminal UI that's also playable from a phone over local HTTPS. Private for now.
 
 ---
 
@@ -97,6 +97,34 @@ Key implementation decisions:
 Presented at the Claude Community Brisbane meetup (24 September 2026): *From Silence to Understanding: Building a Live Korean Translator*.
 
 `React` `Cloudflare Workers AI` `Gemma 4` `Whisper` `whisper.cpp` `Python` `nginx` `Cloudflare Tunnel` `Cloudflare Access` `Let's Encrypt` `systemd` `Raspberry Pi`
+ 
+---
+
+### [EchoVoice — Local Voice Engine & Audiobook Studio](https://github.com/AC-DAC/EchoVoice-Public)
+A voice engine on the Mac: text in, natural-sounding speech out, with every take judged before it ships. It produces all of Lingus's Korean audio, turns PDFs and notes into audiobooks in a local studio, and voices a desktop assistant.
+
+The core problem wasn't the model, it was quality control: an open TTS model invents rhythm and emphasis on every take, and no automatic signal predicted what a listener would reject (Whisper confidence, pace and transcript match all scored AUC 0.50–0.60 against marks by ear). So EchoVoice is mostly the machinery around the model.
+
+https://github.com/user-attachments/assets/4f4eb768-b2ce-4cdc-859a-20235a1dbd5d
+
+```
+text → spoken form → Qwen3-TTS (MLX) → judge → keep or re-roll → mp3 + manifest
+                                         │
+     words heard (Whisper) · dropped words (MMS) · voice match (ECAPA) · quality (UTMOS) · signal checks
+```
+
+Key implementation decisions:
+
+- **A judge on every take.** Best-of-N rendering: a take that misreads, drops a word, drifts from the voice or ends abruptly is re-rolled; a line that still fails is flagged for review, never shipped silently. Thresholds are calibrated per voice from takes marked by ear.
+- **Blind listening tests decide.** Each voice was chosen and tuned in shuffled, unlabelled sets with a control and a hidden duplicate. The Korean voice was fine-tuned on approved takes (Qwen's single-speaker fine-tuning ported to Apple Silicon) and scored 39/40 blind; Azure's Korean voice was rejected 10/10 in the same method.
+- **Audiobooks end to end.** PDFs read by layout (headers, footers, page numbers and citations dropped), a spoken-form pass ("p. 42" → "page 42"), a read-along view with the word being spoken highlighted, and chapter summaries from a local LLM.
+- **Two processes.** The studio loads no models (≈56 MB); a render worker starts on demand and exits when idle.
+- **Memory at scale.** A 32.7-hour narration exposed a 68 GB "leak" that was three models ratcheting together on long audio (fixed by 60 s windows: +9.9 GB → +0.5 GB) and a 42 GB join (now streamed: 263 MB peak, byte-identical output).
+- **Nothing leaves the Mac.** No cloud TTS; documents and audio stay local.
+
+![EchoVoice — Read view with the chapter summary (public-domain mockup)](assets/screenshots/echovoice-audiobook-read.png)
+
+`Python` `Qwen3-TTS` `MLX` `whisper.cpp` `Silero VAD` `MMS` `SpeechBrain ECAPA` `UTMOS` `PyTorch (MPS)` `Ollama` `Gemma 4` `ffmpeg` `pytest`
  
 ---
 
