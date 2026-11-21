@@ -37,7 +37,7 @@ I started in graphic design where details matter because someone experiences the
 
 **Lingus** — translation accuracy on live calls, Story (read-along Korean stories, voiced line by line, read back and scored), and spoken scoring. Production deployed at `lingus.alexchuc.au`.
 
-**EchoVoice** — a local voice engine on the Mac: text in, natural-sounding speech out. Qwen3-TTS on MLX, with every take scored by a judge (Whisper transcript, speaker similarity, MOS prediction, signal checks) and re-rolled on failure. It already produces all of Lingus's Korean audio — the homelab and hardware were already there, so self-hosting beat paying for a cloud TTS service. PDF narration and assistant voices are next. Private for now.
+**[EchoVoice](https://github.com/AC-DAC/EchoVoice-Public)** — a local voice engine on the Mac: text in, natural-sounding speech out. Qwen3-TTS on MLX, with every take scored by a judge (Whisper transcript, speaker similarity, MOS prediction, signal checks) and re-rolled on failure. It produces all of Lingus's Korean audio, turns documents into audiobooks with a read-along view and local chapter summaries, and voices a desktop assistant. Every voice is chosen and tuned in blind listening tests. The homelab and hardware were already there, so self-hosting beat paying for a cloud TTS service.
 
 ---
 
