@@ -256,13 +256,13 @@ Linux · Nginx · Docker · Docker Compose · GitHub Actions · Bash · Cron · 
 AWS · IAM · VPC · EC2 · S3 · RDS · Lambda · API Gateway · AWS CLI · Secrets Manager · Terraform
  
 **Development**
-React Native · Expo · React · Kotlin · JavaScript · Python · PHP · HTML · CSS
+React Native · Expo · React · Kotlin · JavaScript · Node.js · Ink · Python · SQLite · PHP · HTML · CSS
  
 **AI & Speech**
-Whisper · whisper.cpp · Qwen3-TTS · MLX · Gemma 4 · Cloudflare Workers AI
+Whisper · whisper.cpp · Qwen3-TTS · MLX · Gemma 4 · Ollama · Silero VAD · MMS · SpeechBrain ECAPA · UTMOS · PyTorch (MPS) · Cloudflare Workers AI
  
 **Tools**
-Git · Jest · Lefthook · EAS Build · PHPCS · Composer · gitleaks · VS Code
+Git · Jest · pytest · ESLint · Lefthook · EAS Build · PHPCS · Composer · gitleaks · ffmpeg · VS Code
  
 ---
  
