@@ -37,7 +37,7 @@ I started in graphic design where details matter because someone experiences the
 
 **Lingus** — translation accuracy on live calls, Story (read-along Korean stories, voiced line by line, read back and scored), and spoken scoring. Production deployed at `lingus.alexchuc.au`.
 
-**[EchoVoice](https://github.com/AC-DAC/EchoVoice-Public)** — a local voice engine on the Mac: text in, natural-sounding speech out. Qwen3-TTS on MLX, with every take scored by a judge (Whisper transcript, speaker similarity, MOS prediction, signal checks) and re-rolled on failure. It produces all of Lingus's Korean audio, turns documents into audiobooks with a read-along view and local chapter summaries, and voices a desktop assistant. Every voice is chosen and tuned in blind listening tests. The homelab and hardware were already there, so self-hosting beat paying for a cloud TTS service.
+**Grotto** — an offline AI story game for the terminal, running entirely on a local model through Ollama: no account, no server. The engineering: guarantees enforced in code rather than the prompt (reply length, who's speaking, what a character can know), a quantisation benchmark and a pre-registered blind evaluation to choose the model, a prompt layout built for Ollama's prompt caching, and an Ink terminal UI that's also playable from a phone over local HTTPS. Private for now.
 
 ---
 
