@@ -100,6 +100,34 @@ Presented at the Claude Community Brisbane meetup (24 September 2026): *From Sil
  
 ---
 
+### [EchoVoice — Local Voice Engine & Audiobook Studio](https://github.com/AC-DAC/EchoVoice-Public)
+A voice engine on the Mac: text in, natural-sounding speech out, with every take judged before it ships. It produces all of Lingus's Korean audio, turns PDFs and notes into audiobooks in a local studio, and voices a desktop assistant.
+
+The core problem wasn't the model, it was quality control: an open TTS model invents rhythm and emphasis on every take, and no automatic signal predicted what a listener would reject (Whisper confidence, pace and transcript match all scored AUC 0.50–0.60 against marks by ear). So EchoVoice is mostly the machinery around the model.
+
+https://github.com/user-attachments/assets/4f4eb768-b2ce-4cdc-859a-20235a1dbd5d
+
+```
+text → spoken form → Qwen3-TTS (MLX) → judge → keep or re-roll → mp3 + manifest
+                                         │
+     words heard (Whisper) · dropped words (MMS) · voice match (ECAPA) · quality (UTMOS) · signal checks
+```
+
+Key implementation decisions:
+
+- **A judge on every take.** Best-of-N rendering: a take that misreads, drops a word, drifts from the voice or ends abruptly is re-rolled; a line that still fails is flagged for review, never shipped silently. Thresholds are calibrated per voice from takes marked by ear.
+- **Blind listening tests decide.** Each voice was chosen and tuned in shuffled, unlabelled sets with a control and a hidden duplicate. The Korean voice was fine-tuned on approved takes (Qwen's single-speaker fine-tuning ported to Apple Silicon) and scored 39/40 blind; Azure's Korean voice was rejected 10/10 in the same method.
+- **Audiobooks end to end.** PDFs read by layout (headers, footers, page numbers and citations dropped), a spoken-form pass ("p. 42" → "page 42"), a read-along view with the word being spoken highlighted, and chapter summaries from a local LLM.
+- **Two processes.** The studio loads no models (≈56 MB); a render worker starts on demand and exits when idle.
+- **Memory at scale.** A 32.7-hour narration exposed a 68 GB "leak" that was three models ratcheting together on long audio (fixed by 60 s windows: +9.9 GB → +0.5 GB) and a 42 GB join (now streamed: 263 MB peak, byte-identical output).
+- **Nothing leaves the Mac.** No cloud TTS; documents and audio stay local.
+
+![EchoVoice — Read view with the chapter summary (public-domain mockup)](assets/screenshots/echovoice-audiobook-read.png)
+
+`Python` `Qwen3-TTS` `MLX` `whisper.cpp` `Silero VAD` `MMS` `SpeechBrain ECAPA` `UTMOS` `PyTorch (MPS)` `Ollama` `Gemma 4` `ffmpeg` `pytest`
+ 
+---
+
 ### [FitForge](https://github.com/AC-DAC/FitForge-Public)
 Privacy-first workout tracking app for Android. No ads, no account required, all data stored on-device. Features custom workout creation, guided session mode, stats and insights, reminders, and QR code workout sharing. Built in React Native / Expo with a custom Material Design-inspired design system. Currently in closed testing on the Google Play Store.
  
